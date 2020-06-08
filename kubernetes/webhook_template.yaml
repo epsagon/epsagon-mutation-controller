@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: mutator
-          image: epsagon/k8s-mutate-webhook:latest
+          image: ${IMAGE_REPO}/${IMAGE_NAME}:latest
           imagePullPolicy: Always
           resources:
             limits:
@@ -49,6 +49,14 @@ spec:
             requests:
               cpu: 250m
               memory: 64Mi
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: epsagon-mutation-controller-webhook-certs
 
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
@@ -60,15 +68,15 @@ metadata:
 webhooks:
   - name: mutation-controller.default.svc.cluster.local
     clientConfig:
-      caBundle: 
+      caBundle: ${CA_BUNDLE}
       service:
         name: mutation-controller
-        namespace: default
+        namespace: epsagon-mutation
         path: "/mutate"
         port: 443
     rules:
-      - operations: ["UPDATE"]
-        apiGroups: [""]
+      - operations: ["UPDATE", "CREATE"]
+        apiGroups: ["apps"]
         apiVersions: ["v1"]
         resources: ["deployments"]
     sideEffects: None
@@ -78,4 +86,3 @@ webhooks:
     namespaceSelector:
       matchLabels:
         mutation-controller: enabled
-
