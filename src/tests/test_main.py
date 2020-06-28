@@ -1,25 +1,32 @@
+# pylint: disable=too-few-public-methods
 """
 Test
 """
 import json
-from main import app
-from flask import url_for
 from base64 import b64decode
+from flask import url_for
 from pytest_httpserver import HTTPServer
+from main.main import app
 
 app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = (
     'http://localhost:5000/test/')
 
 
 class TestHealthz:
-    def test_healthz(self):
+    """ simple healthz test """
+    @staticmethod
+    def test_healthz():
+        """ simple healthz test """
         with app.test_request_context():
             client = app.test_client()
             assert client.get(url_for('healthz')).status_code == 200
 
 
 class TestMutate:
-    def test_sanity(self):
+    """ test for the /mutate endpoint """
+    @staticmethod
+    def test_sanity():
+        """ basic sanity test """
         with app.test_request_context(), HTTPServer(port=5000) as httpserver:
             httpserver.expect_request('/test/', method='POST',
                                       ).respond_with_json({})
@@ -47,7 +54,9 @@ class TestMutate:
             ]
             assert response_patch == expected_patch
 
-    def test_with_label(self):
+    @staticmethod
+    def test_with_label():
+        """ test that if the labels exist it will be handled well """
         with app.test_request_context(), HTTPServer(port=5000) as httpserver:
             httpserver.expect_request('/test/', method='POST',
                                       ).respond_with_json({})

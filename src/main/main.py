@@ -5,10 +5,10 @@ import os
 import copy
 import base64
 import argparse
+import logging
 import requests
 import jsonpatch
 from flask import Flask, request, jsonify
-import logging
 
 logging.getLogger().setLevel(logging.DEBUG)
 app = Flask(__name__)
@@ -23,17 +23,24 @@ app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = os.getenv(
 
 @app.route("/")
 def hello():
+    """ hello from python """
     logging.info('info message')
     return "Hello from Python!"
 
 
 @app.route("/healthz")
 def healthz():
+    """ healthz for readyness checks """
     return "OK", 200
 
 
 @app.route("/mutate", methods=['POST'])
 def mutate():
+    """
+    Mutation admission main endpoint
+    Sends epsagon a notification about the change and
+    preserves the 'epsagon-mutatoin' label
+    """
     requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=request.json)
 
     deployment = request.json['request']['object']
