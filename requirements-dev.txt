@@ -1,0 +1,3 @@
+-r cmd/requirements.txt
+pytest
+pytest-httpserver
