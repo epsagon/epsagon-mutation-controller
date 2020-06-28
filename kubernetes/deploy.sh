@@ -1,5 +1,9 @@
-# export IMAGE_REPO=epsagon
-# export IMAGE_NAME=auto-inst-mutation-controller
+if [ -z $IMAGE_REPO ] ; then
+    export IMAGE_REPO=epsagon
+fi
+if [ -z $IMAGE_NAME ] ; then
+    export IMAGE_NAME=auto-inst-mutation-controller
+fi
 
 export KUBECTL="kubectl"
 
