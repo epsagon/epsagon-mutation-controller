@@ -54,7 +54,8 @@ spec:
               mountPath: /etc/webhook/certs
               readOnly: true
           env:
-            EPSAGON_TOKEN: ${EPSAGON_TOKEN}
+            - name: EPSAGON_TOKEN
+              value: ${EPSAGON_TOKEN}
       volumes:
         - name: webhook-certs
           secret:
