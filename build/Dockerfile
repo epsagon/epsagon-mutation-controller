@@ -11,20 +11,20 @@ ENV USER_UID=1001 \
   USER_NAME=auto-inst-mutation-controller
 
 
-RUN mkdir /cmd
-COPY cmd/requirements.txt /cmd/requirements.txt
-RUN pip install -r /cmd/requirements.txt
+RUN mkdir /src
+COPY src/requirements.txt /src/requirements.txt
+RUN pip install -r /src/requirements.txt
 
 # install auto-inst-mutation-controller binary
 # COPY build/_output/bin/auto-inst-mutation-controller ${EPSAGON_MUTATION_CONTROLLER}
-COPY cmd/main.py /cmd/main.py
+COPY src/main.py /src/main.py
 
 # # copy licenses
 # RUN mkdir /licenses
 # COPY LICENSE /licenses
 
 # set entrypoint
-ENTRYPOINT ["python", "cmd/main.py"]
+ENTRYPOINT ["python", "src/main.py"]
 
 # switch to non-root user
 USER ${USER_UID}

@@ -2,12 +2,16 @@ language: python
 python:
     - "3.7"
 
+env:
+  global:
+    - PYTHONPATH=$PYTHONPATH:$(pwd)/src
+
 install:
   - pip install -r requirements-dev.txt
   - pip install pylint
 
 script:
-  - "pylint --msg-template='{path}:{line}: [{msg_id}({symbol}) {obj}] {msg}' cmd/"
+  - "pylint --msg-template='{path}:{line}: [{msg_id}({symbol}) {obj}] {msg}' src/"
   - pytest
 
 stages:

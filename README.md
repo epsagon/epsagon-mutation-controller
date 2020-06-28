@@ -2,7 +2,14 @@
 
 ## build image
 
+```
+make image
+```
+
 ## deploy to cluster
+```
+source kubernetes/deploy.sh
+```
 
 
 ### Used code from
