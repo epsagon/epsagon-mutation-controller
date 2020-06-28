@@ -22,6 +22,10 @@ while [[ $# -gt 0 ]]; do
             export KUBECTL="${KUBECTL} --kubeconfig ${2}"
             shift
             ;;
+        --token)
+            export EPSAGON_TOKEN=${2}
+            shift
+            ;;
         *)
             usage
             ;;
