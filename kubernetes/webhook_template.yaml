@@ -83,6 +83,6 @@ webhooks:
     timeoutSeconds: 5
     reinvocationPolicy: Never
     failurePolicy: Ignore
-    namespaceSelector:
+    objectSelector:
       matchLabels:
-        mutation-controller: enabled
+        epsagon-mutation: enabled
