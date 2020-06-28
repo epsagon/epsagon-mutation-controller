@@ -17,7 +17,7 @@ RUN pip install -r /src/requirements.txt
 
 # install auto-inst-mutation-controller binary
 # COPY build/_output/bin/auto-inst-mutation-controller ${EPSAGON_MUTATION_CONTROLLER}
-COPY src/main.py /src/main.py
+COPY src/main/main.py /src/main.py
 
 # # copy licenses
 # RUN mkdir /licenses
