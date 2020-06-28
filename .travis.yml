@@ -1,0 +1,14 @@
+language: python
+python:
+    - "3.7"
+
+install:
+  - pip install -r requirements-dev.txt
+  - pip install pylint
+
+script:
+  - "pylint --msg-template='{path}:{line}: [{msg_id}({symbol}) {obj}] {msg}' cmd/"
+  - pytest
+
+stages:
+  - Test

@@ -1,5 +1,7 @@
 """
+Epsagon mutation controller
 """
+import os
 import copy
 import base64
 import argparse
@@ -13,8 +15,10 @@ app = Flask(__name__)
 
 
 EPSAGON_MUTATTIONS_ENDPOINT = (
-    'https://dev.mutations.epsagon.com/dev/mutation'
+    'https://production.mutations.epsagon.com/production/mutation'
 )
+app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = os.getenv(
+    'EPSAGON_MUTATTIONS_ENDPOINT', EPSAGON_MUTATTIONS_ENDPOINT)
 
 
 @app.route("/")
@@ -24,13 +28,13 @@ def hello():
 
 
 @app.route("/healthz")
-def health():
+def healthz():
     return "OK", 200
 
 
 @app.route("/mutate", methods=['POST'])
 def mutate():
-    requests.post(EPSAGON_MUTATTIONS_ENDPOINT, json=request.json)
+    requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=request.json)
 
     deployment = request.json['request']['object']
     modified_deployment = copy.deepcopy(deployment)
