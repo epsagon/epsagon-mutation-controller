@@ -17,6 +17,7 @@ app = Flask(__name__)
 EPSAGON_MUTATTIONS_ENDPOINT = (
     'https://production.mutations.epsagon.com/production/mutation'
 )
+TOKEN = os.getenv('EPSAGON_TOKEN', 'NONE')
 app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = os.getenv(
     'EPSAGON_MUTATTIONS_ENDPOINT', EPSAGON_MUTATTIONS_ENDPOINT)
 
@@ -41,7 +42,9 @@ def mutate():
     Sends epsagon a notification about the change and
     preserves the 'epsagon-mutatoin' label
     """
-    requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=request.json)
+    epsagon_data = {'epsagon_token': TOKEN}
+    epsagon_data.update(request.json)
+    requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
 
     deployment = request.json['request']['object']
     modified_deployment = copy.deepcopy(deployment)
