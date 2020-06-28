@@ -7,11 +7,6 @@ IMAGE_NAME ?= auto-inst-mutation-controller
 PWD := $(shell pwd)
 BASE_DIR := $(shell basename $(PWD))
 
-# Keep an existing GOPATH, make a private one if it is undefined
-GOPATH_DEFAULT := $(PWD)/.go
-export GOPATH ?= $(GOPATH_DEFAULT)
-TESTARGS_DEFAULT := "-v"
-export TESTARGS ?= $(TESTARGS_DEFAULT)
 IMAGE_TAG ?= $(shell date +v%Y%m%d)-$(shell git describe --match=$(git rev-parse --short=8 HEAD) --tags --always --dirty)
 
 
@@ -30,11 +25,7 @@ all: test build image
 
 test:
 	@echo "Running the tests for $(IMAGE_NAME)..."
-	@go test $(TESTARGS) ./...
-
-build:
-	@echo "Building the $(IMAGE_NAME) binary..."
-	@CGO_ENABLED=0 go build -o build/_output/bin/$(IMAGE_NAME) ./cmd/
+	@pytest cmd/
 
 image: build-image push-image
 
