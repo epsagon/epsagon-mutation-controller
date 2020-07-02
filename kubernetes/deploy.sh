@@ -39,6 +39,6 @@ done
 
 
 ${KUBECTL} create ns epsagon-mutation
-cat webhook_template.yaml | ./webhook-patch-ca-bundle.sh > webhook_deployment.yaml
+./webhook-patch-ca-bundle.sh
 ./webhook-create-signed-cert.sh
 ${KUBECTL} apply -f webhook_deployment.yaml
