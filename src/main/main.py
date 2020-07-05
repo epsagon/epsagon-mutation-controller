@@ -57,12 +57,15 @@ def mutate():
     """
     epsagon_data = {'epsagon_token': TOKEN}
     epsagon_data.update(request.json)
-    requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
-
     deployment = request.json['request']['object']
     modified_deployment = copy.deepcopy(deployment)
     if 'labels' not in modified_deployment['metadata']:
         modified_deployment['metadata']['labels'] = {}
+
+    if "epsagon-auto-instrument" not in modified_deployment['metadata']['labels']:
+        requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
+    else:
+        modified_deployment['metadata']['labels'].pop("epsagon-auto-instrument")
     modified_deployment['metadata']['labels']['epsagon-mutation'] = 'enabled'
     mutation_cluster = _get_mutation_cluster_annotation(request)
     if mutation_cluster:
