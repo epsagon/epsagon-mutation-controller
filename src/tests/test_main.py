@@ -107,4 +107,3 @@ class TestMutate:
                             'response']['patch']).decode('utf-8'))
             expected_patch = []
             assert response_patch == expected_patch
-
