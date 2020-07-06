@@ -35,7 +35,18 @@ class TestMutate:
                 'request': {
                     'uid': '123',
                     'object': {
-                        'metadata': {}
+                        'metadata': {
+                            'labels': {
+                                'epsagon-auto-instrument': 'test-auto-instrument'
+                            },
+                        },
+                    },
+                    'oldObject': {
+                        'metadata': {
+                            'annotations': {
+                                'epsagon-mutation-cluster': "random_cluster",
+                            }
+                        }
                     },
                 },
             }
@@ -48,11 +59,22 @@ class TestMutate:
                             'response']['patch']).decode('utf-8'))
             expected_patch = [
                 {'op': 'add',
-                 'path': '/metadata/labels',
-                 'value': {'epsagon-mutation': 'enabled'}
-                 }
+                 'path': '/metadata/labels/epsagon-mutation',
+                 'value': 'enabled',
+                 },
+                {'op': 'add',
+                 'path': '/metadata/annotations',
+                 'value': {'epsagon-mutation-cluster': 'random_cluster'}
+                 },
+                {'op': 'remove',
+                 'path': '/metadata/labels/epsagon-auto-instrument',
+                },
             ]
-            assert response_patch == expected_patch
+            # patch changes order might change between tests
+            assert len(expected_patch) == len(response_patch)
+            for action in expected_patch:
+                assert action in response_patch
+
 
     @staticmethod
     def test_with_label():
@@ -67,8 +89,11 @@ class TestMutate:
                     'object': {
                         'metadata': {
                             'labels': {
-                                'epsagon-mutation': 'enabled'
-                            }
+                                'epsagon-mutation': 'enabled',
+                            },
+                            'annotations': {
+                                'epsagon-mutation-cluster': "random_cluster",
+                            },
                         }
                     },
                 },
