@@ -63,7 +63,7 @@ def mutate():
     if 'labels' not in modified_deployment['metadata']:
         modified_deployment['metadata']['labels'] = {}
 
-    if "epsagon-auto-instrument" not in deployment['metadata']['labels']:
+    if "epsagon-auto-instrument" not in modified_deployment['metadata']['labels']:
         requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
     else:
         modified_deployment['metadata']['labels'].pop("epsagon-auto-instrument")
