@@ -35,14 +35,14 @@ def healthz():
     return "OK", 200
 
 
-def _get_mutation_cluster_annotation(request):
+def _get_mutation_cluster_annotation(request_data):
     """
     Gets the epsagon mutation cluster annotation value, None if not exists
     """
-    if not request.json:
+    if not request_data.json:
         return None
     try:
-        return request.json['request']['oldObject']["metadata"][
+        return request_data.json['request']['oldObject']["metadata"][
             "annotations"]["epsagon-mutation-cluster"]
     except KeyError:
         return None
