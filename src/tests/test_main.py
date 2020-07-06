@@ -71,7 +71,6 @@ class TestMutate:
                 },
             ]
             # patch changes order might change between tests
-            print(response_patch)
             assert len(expected_patch) == len(response_patch)
             for action in expected_patch:
                 assert action in response_patch
