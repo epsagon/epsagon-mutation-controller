@@ -73,7 +73,8 @@ def mutate():
     if mutation_cluster:
         if 'annotations' not in modified_deployment:
             modified_deployment['metadata']['annotations'] = {}
-        modified_deployment['metadata']['annotations']['epsagon-mutation-cluster'] = mutation_cluster
+        modified_deployment['metadata']['annotations'][
+            'epsagon-mutation-cluster'] = mutation_cluster
     patch = jsonpatch.JsonPatch.from_diff(deployment, modified_deployment)
 
     admission_response = {
