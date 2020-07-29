@@ -25,7 +25,7 @@ all: test build image
 
 test:
 	@echo "Running the tests for $(IMAGE_NAME)..."
-	@pytest src/
+	@PYTHONPATH=src/ pytest src/
 
 image: build-image push-image
 
