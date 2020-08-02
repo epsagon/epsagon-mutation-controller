@@ -54,7 +54,7 @@ def _get_mutation_cluster_annotation(request_data):
 
 def _is_reinstrumented_by_epsagon(deployment):
     """
-    Checks whether given deployment has been changed by Epsagon and 
+    Checks whether given deployment has been changed by Epsagon
     """
     return (
         deployment['metadata']['labels'].get(EPSAGON_AUTO_INST_FLAG, "") == ENABLE_INSTRUMENTATION
