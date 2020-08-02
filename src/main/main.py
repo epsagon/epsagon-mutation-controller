@@ -52,6 +52,15 @@ def _get_mutation_cluster_annotation(request_data):
         return None
 
 
+def _is_reinstrumented_by_epsagon(deployment):
+    """
+    Checks whether given deployment has been changed by Epsagon and 
+    """
+    return (
+        deployment['metadata']['labels'].get(EPSAGON_AUTO_INST_FLAG, "") == ENABLE_INSTRUMENTATION
+    )
+
+
 def _save_epsagon_instrumentation(deployment):
     """
     Keeps epsagon changes on mutated deployment
@@ -60,7 +69,7 @@ def _save_epsagon_instrumentation(deployment):
     epsagon_data.update(request.json)
     if 'labels' not in deployment['metadata']:
         deployment['metadata']['labels'] = {}
-    if deployment['metadata']['labels'].get(EPSAGON_AUTO_INST_FLAG, "") != ENABLE_INSTRUMENTATION:
+    if not _is_reinstrumented_by_epsagon(deployment):
         requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
     deployment['metadata']['labels'].pop(EPSAGON_AUTO_INST_FLAG, None)
     deployment['metadata']['labels'][EPSAGON_MUTATION] = 'enabled'
