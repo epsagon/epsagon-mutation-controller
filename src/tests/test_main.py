@@ -11,7 +11,8 @@ from main.main import (
     EPSAGON_MUTATION,
     EPSAGON_MUTATION_CLUSTER,
     EPSAGON_AUTO_INST_FLAG,
-    EPSAGON_REMOVE_AUTO_INST_FLAG,
+    ENABLE_INSTRUMENTATION,
+    DISABLE_INSTRUMENTATION,
 )
 
 app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = (
@@ -41,7 +42,7 @@ class TestMutate:
                     'object': {
                         'metadata': {
                             'labels': {
-                                EPSAGON_AUTO_INST_FLAG: 'test-auto-instrument'
+                                EPSAGON_AUTO_INST_FLAG: ENABLE_INSTRUMENTATION,
                             },
                         },
                     },
@@ -124,7 +125,7 @@ class TestMutate:
                     'object': {
                         'metadata': {
                             'labels': {
-                                EPSAGON_REMOVE_AUTO_INST_FLAG: 'disable'
+                                EPSAGON_AUTO_INST_FLAG: DISABLE_INSTRUMENTATION,
                             },
                         },
                     },
@@ -149,7 +150,7 @@ class TestMutate:
                             'response']['patch']).decode('utf-8'))
             expected_patch = [
                 {'op': 'remove',
-                 'path': f'/metadata/labels/{EPSAGON_REMOVE_AUTO_INST_FLAG}',
+                 'path': f'/metadata/labels/{EPSAGON_AUTO_INST_FLAG}',
                 },
             ]
             # patch changes order might change between tests
