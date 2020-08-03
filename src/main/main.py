@@ -19,7 +19,8 @@ EPSAGON_MUTATTIONS_ENDPOINT = (
 EPSAGON_MUTATION = "epsagon-mutation"
 EPSAGON_MUTATION_CLUSTER = "epsagon-mutation-cluster"
 EPSAGON_AUTO_INST_FLAG = "epsagon-auto-instrument"
-EPSAGON_REMOVE_AUTO_INST_FLAG = "epsagon-remove-auto-instrument"
+ENABLE_INSTRUMENTATION = "enable"
+DISABLE_INSTRUMENTATION = "disable"
 TOKEN = os.getenv('EPSAGON_TOKEN', 'NONE')
 app.config['EPSAGON_MUTATTIONS_ENDPOINT'] = os.getenv(
     'EPSAGON_MUTATTIONS_ENDPOINT', EPSAGON_MUTATTIONS_ENDPOINT)
@@ -51,6 +52,15 @@ def _get_mutation_cluster_annotation(request_data):
         return None
 
 
+def _is_reinstrumented_by_epsagon(deployment):
+    """
+    Checks whether given deployment has been changed by Epsagon
+    """
+    return (
+        deployment['metadata']['labels'].get(EPSAGON_AUTO_INST_FLAG, "") == ENABLE_INSTRUMENTATION
+    )
+
+
 def _save_epsagon_instrumentation(deployment):
     """
     Keeps epsagon changes on mutated deployment
@@ -59,12 +69,9 @@ def _save_epsagon_instrumentation(deployment):
     epsagon_data.update(request.json)
     if 'labels' not in deployment['metadata']:
         deployment['metadata']['labels'] = {}
-
-    if EPSAGON_AUTO_INST_FLAG not in deployment['metadata']['labels']:
+    if not _is_reinstrumented_by_epsagon(deployment):
         requests.post(app.config['EPSAGON_MUTATTIONS_ENDPOINT'], json=epsagon_data)
-    else:
-        deployment['metadata']['labels'].pop(EPSAGON_AUTO_INST_FLAG)
-
+    deployment['metadata']['labels'].pop(EPSAGON_AUTO_INST_FLAG, None)
     deployment['metadata']['labels'][EPSAGON_MUTATION] = 'enabled'
     mutation_cluster = _get_mutation_cluster_annotation(request)
     if mutation_cluster:
@@ -79,7 +86,7 @@ def _remove_epsagon_instrumentation(deployment):
     Removes epsagon changes from mutated deployment
     """
     if "labels" in deployment['metadata']:
-        deployment['metadata']['labels'].pop(EPSAGON_REMOVE_AUTO_INST_FLAG, None)
+        deployment['metadata']['labels'].pop(EPSAGON_AUTO_INST_FLAG, None)
         deployment['metadata']['labels'].pop(EPSAGON_MUTATION, None)
     if "annotations" in deployment['metadata']:
         deployment['metadata']['annotations'].pop(EPSAGON_MUTATION_CLUSTER, None)
@@ -97,8 +104,8 @@ def mutate():
         modified_deployment = copy.deepcopy(deployment)
         if (
                 modified_deployment['metadata'].get("labels", {}).get(
-                    EPSAGON_REMOVE_AUTO_INST_FLAG, ""
-                ) == "disable"
+                    EPSAGON_AUTO_INST_FLAG, ""
+                ) == DISABLE_INSTRUMENTATION
         ):
             _remove_epsagon_instrumentation(modified_deployment)
         else:
