@@ -1,4 +1,6 @@
 # Epsagon Mutation Controller
+Deployment mutation controller for auto-traced kubernetes containers, ensuring containers remain auto-traced by Epsagon.
+Supported kubernetes versions: > 1.15.0.
 
 ## build image
 
