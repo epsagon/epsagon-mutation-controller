@@ -1,5 +1,5 @@
 if [ -z $IMAGE_REPO ] ; then
-    export IMAGE_REPO=epsagon
+    export IMAGE_REPO=docker.io/epsagon
 fi
 if [ -z $IMAGE_NAME ] ; then
     export IMAGE_NAME=auto-inst-mutation-controller
